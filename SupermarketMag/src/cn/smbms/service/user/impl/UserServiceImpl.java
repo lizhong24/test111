@@ -208,9 +208,18 @@ public class UserServiceImpl implements UserService {
 		Connection connection = null;
 		try {
 			connection = BaseDao.getConnection();
+			connection.setAutoCommit(false);
 			flag = dao.updatePwd(connection, id, pwd);
+			if (flag) {
+				connection.commit();
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
+			try {
+				connection.rollback();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
 		} finally {
 			BaseDao.closeResource(connection, null, null);
 		}

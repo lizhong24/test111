@@ -13,11 +13,11 @@ import cn.smbms.service.ServiceFactory;
 import cn.smbms.service.user.UserService;
 import cn.smbms.util.Constants;
 
-@WebServlet("/login.do")
+/**
+ * 处理用户登录
+ */
+@WebServlet("/login.html")
 public class LoginServlet extends HttpServlet {
-
-	// private UserService service = (UserService) ServiceFactory
-	// .getServiceImpl("UserService");
 
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {

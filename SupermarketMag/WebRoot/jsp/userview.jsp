@@ -21,7 +21,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
     <div class="publicHeaderR">
         <p><span>下午好！</span><span style="color: #fff21b">${userSession.userName }</span> , 欢迎你！</p>
-        <a href="login.jsp">退出</a>
+        <a href="jsp/welcome.jsp">退出</a>
     </div>
 </header>
 <!--时间-->

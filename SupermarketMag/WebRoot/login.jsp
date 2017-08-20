@@ -25,7 +25,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             <h1>超市账单管理系统</h1>
         </header>
         <section class="loginCont">
-            <form class="loginForm" action="login.do">
+            <form class="loginForm" action="login.html">
                 <div class="inputbox">
                     <label for="user">用户名：</label>
                     <input id="userCode" type="text" name="userCode" placeholder="请输入用户名" required/>
@@ -34,7 +34,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     <label for="mima">密码：</label>
                     <input id="userPassword" type="password" name="userPassword" placeholder="请输入密码" required/>
                 </div>
-                ${error }
+                ${error}
                 <div class="subBtn">
                     <input type="submit" value="登录" />
                     <input type="reset" value="重置"/>

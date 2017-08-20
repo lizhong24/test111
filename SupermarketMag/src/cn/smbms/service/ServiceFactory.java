@@ -1,5 +1,7 @@
 package cn.smbms.service;
 
+import cn.smbms.service.bill.impl.BillServiceImpl;
+import cn.smbms.service.provider.impl.ProviderServiceImpl;
 import cn.smbms.service.user.impl.UserServiceImpl;
 
 public class ServiceFactory {
@@ -37,7 +39,12 @@ public class ServiceFactory {
 		case "UserService":
 			service = new UserServiceImpl();
 			break;
-
+		case "ProviderService":
+			service = new ProviderServiceImpl();
+			break;
+		case "BillService":
+			service = new BillServiceImpl();
+			break;
 		default:
 			break;
 		}

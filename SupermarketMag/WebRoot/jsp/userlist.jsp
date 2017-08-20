@@ -15,16 +15,17 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     <link rel="stylesheet" href="css/style.css"/>
     <style type="text/css">
     	#sub{
-   		   margin-left: 20px;
-		   width: 100px;
-		   padding: 0 20px;
-		   height: 30px;
-		   border: 1px solid #7ba92c;
-		   border-radius: 4px;
-		   color: #fff;
-		   font-weight: bold;
-		   background: #87c212 url(images/search.png) 10px center no-repeat;
-        }
+		 	margin-left: 20px;
+		    width: 100px;
+		    padding: 0 20px;
+		    height: 30px;
+		    border: 1px solid #7ba92c;
+		    border-radius: 4px;
+		    color: #fff;
+		    font-weight: bold;
+		    font-size: 16px;
+		    background: #87c212 url(images/search.png) 10px center no-repeat;
+		}
     </style>
 </head>
 <body>
@@ -33,7 +34,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         <h1>超市账单管理系统</h1>
         <div class="publicHeaderR">
             <p><span>下午好！</span><span style="color: #fff21b"> ${userSession.userName }</span> , 欢迎你！</p>
-            <a href="login.jsp">退出</a>
+            <a href="welcome.jsp">退出</a>
         </div>
     </header>
 <!--时间-->
@@ -73,9 +74,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 	
               	<!-- 创建分页使用的隐藏域       当前页 -->
  				<input type="hidden" name="pageIndex">
-            
-            
-                 </form>
+            </form>
             </div>
             <!--用户-->
             <table class="providerTable" cellpadding="0" cellspacing="0">
@@ -88,11 +87,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     <th width="10%">用户类型</th>
                     <th width="30%">操作</th>
                 </tr>
-                <c:forEach items="${userList }" var="user" varStatus="status">
-        
-                <tr>
-                    <td>${user.userCode }</td>
-                    <td>${user.userName }</td>
+                <c:forEach items="${userList}" var="user" varStatus="status">
+                <tr id="${user.id}">
+                    <td>${user.userCode}</td>
+                    <td>${user.userName}</td>
                     <td>
                     <c:if test="${user.gender==1 }">男</c:if>
                     <c:if test="${user.gender==2 }">女</c:if>
@@ -110,28 +108,24 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                         <a class="deleteUser" href="javascript:;" userid=${user.id } username=${user.userName } >删除</a>
                     </td>
                 </tr>
-                
                 </c:forEach>
             </table>
+			<input type="hidden" id="delid"/>
+		 <nav>
+		  <div>	  
+		  <c:if test="${pageUtil.pageIndex>1}">
+		    <span><a href="javascript:newsPage(document.forms[0],1)">首页</a></span>
+		    <span><a href="javascript:newsPage(document.forms[0],${pageUtil.pageIndex-1})" >上一页</a></span>
+		  </c:if>  
+		  
+		    <c:if test="${pageUtil.pageIndex< pageUtil.pageCount}">
+		    <span><a href="javascript:newsPage(document.forms[0],${pageUtil.pageIndex+1})">下一页</a></span>
+		    <span><a href="javascript:newsPage(document.forms[0],${pageUtil.pageCount})">尾页</a></span>
+		     </c:if>  
+		  </div>
+		 </nav>   
 
-<nav>
-	  <div>
-	  
-	  <c:if test="${pageUtil.pageIndex>1}">
-	    <span><a href="javascript:newsPage(document.forms[0],1)">首页</a></span>
-	    <span><a href="javascript:newsPage(document.forms[0],${pageUtil.pageIndex-1})" >上一页</a></span>
-	  </c:if>  
-	  
-	    <c:if test="${pageUtil.pageIndex< pageUtil.pageCount}">
-	    <span><a href="javascript:newsPage(document.forms[0],${pageUtil.pageIndex+1})">下一页</a></span>
-	    <span><a href="javascript:newsPage(document.forms[0],${pageUtil.pageCount})">尾页</a></span>
-	     </c:if>  
-	  </div>
-  </nav>   
-
-
-        </div>
-              
+        </div>              
     </section>
 
 <!--点击删除按钮后弹出的页面-->
@@ -140,9 +134,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     <div class="removerChid">
         <h2>提示</h2>
         <div class="removeMain">
+        <!-- 隐藏域  -->
+			<input  type="hidden" id="url">
             <p>你确定要删除该用户吗？</p>
-            <a href="#" id="yes">确定</a>
-            <a href="#" id="no">取消</a>
+            <a href="javascript:;" id="yes" onClick="delSubmit()">确定</a>
+            <a href="javascript:delhid();" id="no">取消</a>
         </div>
     </div>
 </div>
@@ -156,15 +152,15 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <script src="js/time.js"></script>
 <script type="text/javascript" src="js/common.js"></script>
 <script type="text/javascript" src="js/userlist.js"></script>
-  <script type="text/javascript">
+<script type="text/javascript">	  	 
 	  
-	  //分页的请求
-	  function  newsPage(form,pageIndex){
-	  //获取form表中的name属性值是pageIndex的隐藏域
-	  form.pageIndex.value=pageIndex;
-	  form.submit();  //表单提交
-	  }
+	 //分页的请求
+	 function  newsPage(form,pageIndex){
+	 //获取form表中的name属性值是pageIndex的隐藏域
+	 form.pageIndex.value=pageIndex;
+	 form.submit();  //表单提交
+	 }
  
-	  </script>
+</script>
 </body>
 </html>

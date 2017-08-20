@@ -26,7 +26,7 @@ import com.mysql.jdbc.StringUtils;
 @WebServlet("/user.do")
 public class UserServlet extends HttpServlet {
 
-	UserService service = (UserService) ServiceFactory
+	private UserService service = (UserService) ServiceFactory
 			.getServiceImpl("UserService");
 
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -49,20 +49,23 @@ public class UserServlet extends HttpServlet {
 			this.userCodeExist(request, response);
 		} else if (method != null && method.equals("delUser")) {// 删除用户
 			this.delUser(request, response);
-		} else if (method != null && method.equals("view")) {// 删除用户
+		} else if (method != null && method.equals("view")) {// 查看用户
 			this.getUserById(request, response, "jsp/userview.jsp");
-		} else if (method != null && method.equals("modify")) {// 删除用户
+		} else if (method != null && method.equals("modify")) {// 查看用户
 			this.getUserById(request, response, "jsp/usermodify.jsp");
-		} else if (method != null && method.equals("modifyexe")) {// 删除用户
+		} else if (method != null && method.equals("modifyexe")) {// 修改用户
 			this.modifyUser(request, response);
 		} else if (method != null && method.equals("pwdmodify")) {
 			this.getPwdByUserId(request, response);
 		} else if (method != null && method.equals("savepwd")) {
 			this.updatePwd(request, response);
+		} else {
+			this.query(request, response);
 		}
 
 	}
 
+	// 修改密码
 	private void updatePwd(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		Object o = request.getSession().getAttribute(Constants.USER_SESSION);
@@ -88,6 +91,7 @@ public class UserServlet extends HttpServlet {
 
 	}
 
+	// 通过当前用户id得到当前用户密码
 	private void getPwdByUserId(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 
@@ -113,6 +117,7 @@ public class UserServlet extends HttpServlet {
 		outPrintWriter.close();
 	}
 
+	// 修改用户
 	private void modifyUser(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		String id = request.getParameter("uid");
@@ -122,9 +127,6 @@ public class UserServlet extends HttpServlet {
 		String phone = request.getParameter("phone");
 		String address = request.getParameter("address");
 		String userType = request.getParameter("userType");
-
-		// System.out.println(id);
-		// System.out.println(userName);
 
 		User user = new User();
 		user.setId(Integer.valueOf(id));
@@ -152,6 +154,7 @@ public class UserServlet extends HttpServlet {
 
 	}
 
+	// 通过id得到当前用户
 	private void getUserById(HttpServletRequest request,
 			HttpServletResponse response, String url) throws ServletException,
 			IOException {
@@ -184,6 +187,7 @@ public class UserServlet extends HttpServlet {
 				resultMap.put("delResult", "true");
 				// request.getRequestDispatcher("user.do?method=query").forward(
 				// request, response);
+
 			} else {
 				resultMap.put("delResult", "false");
 				// request.getRequestDispatcher("jsp/userlist.jsp").forward(
@@ -269,19 +273,6 @@ public class UserServlet extends HttpServlet {
 
 	}
 
-	/** 
-	 * // 查询用户列表
-		private void query(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		String queryUserName = request.getParameter("queryUserName");
-		System.out.println("queryUserName servlet---" + queryUserName);
-		List<User> userList = null;
-		userList = service.getUserList(queryUserName);
-		request.getSession().setAttribute("userList", userList);
-		request.getSession().setAttribute("queryUserName", queryUserName);
-		response.sendRedirect("jsp/userlist.jsp");
-	 */
-
 	// 查询用户列表
 	private void query(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -297,29 +288,21 @@ public class UserServlet extends HttpServlet {
 		}
 		// 给总记录数赋值 的同时 也给 总页数 赋值了
 
-		try {
-			int totalCount = service.getTotalCount(queryUserName);
-			pageUtil.setTotalCount(totalCount);// 总记录数赋值
-		} catch (Exception e1) {
-			e1.printStackTrace();
-		}
+		int totalCount = service.getTotalCount(queryUserName);
+		pageUtil.setTotalCount(totalCount);// 总记录数赋值
 
 		// 分页显示 新闻信息
-		try {
-			List<User> userList = service.getPageList(queryUserName, pageUtil);
-			if (userList != null) {
-				// 还是要把集合放进 作用域中 便于前台获取
-				request.getSession().setAttribute("userList", userList);
-				request.getSession().setAttribute("queryUserName",
-						queryUserName);
-				// 把分页的工具类对象页得放进作用域中
-				request.getSession().setAttribute("pageUtil", pageUtil);
-				response.sendRedirect("jsp/userlist.jsp");
-			} else {
-				System.out.println("出现异常！");
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
+		List<User> userList = service.getPageList(queryUserName, pageUtil);
+		if (userList != null) {
+			// 还是要把集合放进 作用域中 便于前台获取
+			request.setAttribute("userList", userList);
+			request.setAttribute("queryUserName", queryUserName);
+			// 把分页的工具类对象页得放进作用域中
+			request.setAttribute("pageUtil", pageUtil);
+			request.getRequestDispatcher("jsp/userlist.jsp").forward(request,
+					response);
+		} else {
+			System.out.println("出现异常！");
 		}
 	}
 }

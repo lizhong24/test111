@@ -59,7 +59,7 @@ public interface UserService extends ConService<User> {
 	 * @return
 	 * @throws Exception
 	 */
-	List<User> getPageList(String userName, PageUtil pageUtil) throws Exception;
+	List<User> getPageList(String userName, PageUtil pageUtil);
 
 	/**
 	 * 根据用户名获取数据库数据总记录数
@@ -67,6 +67,6 @@ public interface UserService extends ConService<User> {
 	 * @return
 	 * @throws Exception
 	 */
-	Integer getTotalCount(String userName) throws Exception;
+	Integer getTotalCount(String userName);
 
 }

@@ -30,6 +30,7 @@ public class UserDaoImpl implements UserDao {
 			}
 			BaseDao.closeResource(null, pstm, rs);
 		}
+
 		return totalCounts;
 	}
 
@@ -106,6 +107,7 @@ public class UserDaoImpl implements UserDao {
 			updateRows = BaseDao.execute(connection, pstm, sql, params);
 			BaseDao.closeResource(null, pstm, null);
 		}
+
 		return updateRows;
 	}
 

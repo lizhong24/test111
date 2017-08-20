@@ -1,5 +1,7 @@
 package cn.smbms.dao;
 
+import cn.smbms.dao.bill.impl.BillDaoImpl;
+import cn.smbms.dao.provider.impl.ProviderDaoImpl;
 import cn.smbms.dao.user.impl.UserDaoImpl;
 
 /**
@@ -40,10 +42,10 @@ public class DaoFactory {
 			dao = new UserDaoImpl();
 			break;
 		case "BillDao":
-			// dao = new BillDaoImpl();
+			dao = new BillDaoImpl();
 			break;
 		case "ProviderDao":
-			// dao = new ProviderDaoImpl();
+			dao = new ProviderDaoImpl();
 			break;
 		default:
 			break;

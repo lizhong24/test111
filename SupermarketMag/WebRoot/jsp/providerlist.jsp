@@ -3,7 +3,8 @@
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 %>
-
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <!DOCTYPE HTML>
 <html>
  <head lang="en">
@@ -13,6 +14,20 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     <title>超市账单管理系统</title>
     <link rel="stylesheet" href="css/public.css"/>
     <link rel="stylesheet" href="css/style.css"/>
+    <style type="text/css">
+    	#sub{
+		 	margin-left: 20px;
+		    width: 100px;
+		    padding: 0 20px;
+		    height: 30px;
+		    border: 1px solid #7ba92c;
+		    border-radius: 4px;
+		    color: #fff;
+		    font-weight: bold;
+		    font-size: 16px;
+		    background: #87c212 url(images/search.png) 10px center no-repeat;
+		}
+    </style>    
 </head>
 <body>
 <!--头部-->
@@ -20,8 +35,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     <h1>超市账单管理系统</h1>
 
     <div class="publicHeaderR">
-        <p><span>下午好！</span><span style="color: #fff21b"> Admin</span> , 欢迎你！</p>
-        <a href="login.html">退出</a>
+        <p><span>下午好！</span><span style="color: #fff21b">${userSession.userName}</span> , 欢迎你！</p>
+        <a href="login.jsp">退出</a>
     </div>
 </header>
 <!--时间-->
@@ -35,11 +50,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         <h2 class="leftH2"><span class="span1"></span>功能列表 <span></span></h2>
         <nav>
             <ul class="list">
-                <li><a href="billList.html">账单管理</a></li>
-                <li id="active"><a href="providerList.html">供应商管理</a></li>
-                <li><a href="userList.html">用户管理</a></li>
+                <li><a href="bill.html?method=query">账单管理</a></li>
+                <li id="active"><a href="provider.html?method=query">供应商管理</a></li>
+                <li><a href="user.do?method=query">用户管理</a></li>
                 <li><a href="password.html">密码修改</a></li>
-                <li><a href="login.html">退出系统</a></li>
+                <li><a href="login.jsp">退出系统</a></li>
             </ul>
         </nav>
     </div>
@@ -49,10 +64,18 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             <span>供应商管理页面</span>
         </div>
         <div class="search">
-            <span>供应商名称：</span>
-            <input type="text" placeholder="请输入供应商的名称"/>
-            <input type="button" value="查询"/>
-            <a href="providerAdd.html">添加供应商</a>
+            <form action="provider.html" method="post" name="queryProvider" id="queryProvider">
+                <input name="method" value="query" class="input-text" type="hidden"/>
+                
+                <span>供应商名称：</span>
+                <input type="text" placeholder="请输入供应商的名称" name="queryProviderName" value="${queryProviderName }"/>&nbsp;&nbsp;&nbsp;&nbsp;             
+                <input type="submit" value="查询"   id="sub"/>	
+                <a href="jsp/provideradd.jsp">添加供应商</a>	
+                	
+              	<!-- 创建分页使用的隐藏域       当前页 -->
+ 				<input type="hidden" name="pageIndex">           
+            </form>
+            
         </div>
         <!--供应商操作表格-->
         <table class="providerTable" cellpadding="0" cellspacing="0">
@@ -65,51 +88,39 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 <th width="10%">创建时间</th>
                 <th width="30%">操作</th>
             </tr>
-            <tr>
-                <td>PRO-CODE—001</td>
-                <td>测试供应商001</td>
-                <td>韩露</td>
-                <td>15918230478</td>
-                <td>15918230478</td>
-                <td>2015-11-12</td>
-                <td>
-                    <a href="providerView.html"><img src="img/read.png" alt="查看" title="查看"/></a>
-                    <a href="providerUpdate.html"><img src="img/xiugai.png" alt="修改" title="修改"/></a>
-                    <a href="#" class="removeProvider"><img src="img/schu.png" alt="删除" title="删除"/></a>
-                </td>
-            </tr>
-            <tr>
-                <td>PRO-CODE—001</td>
-                <td>测试供应商001</td>
-                <td>韩露</td>
-                <td>15918230478</td>
-                <td>15918230478</td>
-                <td>2015-11-12</td>
-                <td>
-                    <a href="providerView.html"><img src="img/read.png" alt="查看" title="查看"/></a>
-                    <a href="providerUpdate.html"><img src="img/xiugai.png" alt="修改" title="修改"/></a>
-                    <a href="#" class="removeProvider"><img src="img/schu.png" alt="删除" title="删除"/></a>
-                </td>
-            </tr>
+            <c:forEach items="${providerList}" var="provider" varStatus="status">
+                <tr>
+                    <td>${provider.proCode}</td>
+                    <td>${provider.proName}</td>                   
+                    <td>${provider.proContact}</td>
+                    <td>${provider.proPhone}</td>
+                    <td>${provider.proFax}</td>
+                    <td><fmt:formatDate value="${provider.creationDate}" pattern="yyyy-MM-dd"/></td>
+                    <td>
+                        <a class="viewProvider" href="javascript:;" proid=${provider.id } proname=${provider.proName } >查看</a>
+                        <a class="modifyProvider" href="javascript:;" proid=${provider.id } proname=${provider.proName } >修改</a>
+                        <a class="deleteProvider" href="javascript:;" proid=${provider.id } proname=${provider.proName } >删除</a>
+                    </td>
+                </tr>
+             </c:forEach>   
         </table>
+		
+	   <nav>
+		  <div>	  
+		  <c:if test="${pageUtil.pageIndex>1}">
+		    <span><a href="javascript:newsPage(document.forms[0],1)">首页</a></span>
+		    <span><a href="javascript:newsPage(document.forms[0],${pageUtil.pageIndex-1})" >上一页</a></span>
+		  </c:if>  
+		  
+		    <c:if test="${pageUtil.pageIndex< pageUtil.pageCount}">
+		    <span><a href="javascript:newsPage(document.forms[0],${pageUtil.pageIndex+1})">下一页</a></span>
+		    <span><a href="javascript:newsPage(document.forms[0],${pageUtil.pageCount})">尾页</a></span>
+		     </c:if>  
+		  </div>
+	   </nav>   
 
-    </div>
-</section>
-
-<!--点击删除按钮后弹出的页面-->
-<div class="zhezhao"></div>
-<div class="remove" id="removeProv">
-   <div class="removerChid">
-       <h2>提示</h2>
-       <div class="removeMain" >
-           <p>你确定要删除该供应商吗？</p>
-           <a href="#" id="yes">确定</a>
-           <a href="#" id="no">取消</a>
-       </div>
-   </div>
-</div>
-
-
+        </div>            
+    </section>
 <footer class="footer">
     版权归北大青鸟
 </footer>
@@ -117,6 +128,17 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <script src="js/jquery.js"></script>
 <script src="js/js.js"></script>
 <script src="js/time.js"></script>
-
+<script type="text/javascript" src="js/common.js"></script>
+<script type="text/javascript" src="js/providerlist.js"></script>
+<script type="text/javascript">	  	 
+	  
+	 //分页的请求
+	 function  newsPage(form,pageIndex){
+	 //获取form表中的name属性值是pageIndex的隐藏域
+	 form.pageIndex.value=pageIndex;
+	 form.submit();  //表单提交
+	 }
+ 
+</script>
 </body>
 </html>
