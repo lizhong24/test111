@@ -12,6 +12,9 @@ import cn.smbms.service.user.UserService;
 import cn.smbms.util.BaseDao;
 import cn.smbms.util.PageUtil;
 
+/**
+ * 用户的业务逻辑层
+ */
 public class UserServiceImpl implements UserService {
 
 	private UserDao dao;
@@ -20,21 +23,7 @@ public class UserServiceImpl implements UserService {
 		dao = (UserDao) DaoFactory.getDaoImpl("UserDao");
 	}
 
-	@Override
-	public Integer getTotalCount() {
-		Connection connection = null;
-		int totalCounts = 0;
-		try {
-			connection = BaseDao.getConnection();
-			totalCounts = dao.getTotalCount(connection);
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			BaseDao.closeResource(connection, null, null);
-		}
-		return totalCounts;
-	}
-
+	// 通过id得到当前用户对象
 	@Override
 	public User getById(Serializable id) {
 		User user = null;
@@ -50,48 +39,19 @@ public class UserServiceImpl implements UserService {
 		return user;
 	}
 
-	@Override
-	public List<User> getList() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<User> getList(PageUtil pageUtil) {
-		Connection connection = null;
-		List<User> userList = null;
-		try {
-			connection = BaseDao.getConnection();
-			userList = dao.getList(connection, pageUtil);
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			BaseDao.closeResource(connection, null, null);
-		}
-		return userList;
-	}
-
+	// 增加用户
 	@Override
 	public boolean add(User user) {
 		boolean flag = false;
 		Connection connection = null;
-		// PreparedStatement pstm = null;
 		try {
 			connection = BaseDao.getConnection();
 			connection.setAutoCommit(false);// 开启JDBC事务
-			int updateRows = dao.add(connection, user);
-			// float a = 6 / 0;
+			flag = dao.add(connection, user);
 			connection.commit();
-			if (updateRows > 0) {
-				flag = true;
-				System.out.println("add success!");
-			} else {
-				System.out.println("add failed!");
-			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			try {
-				System.out.println("rollback==============");
 				connection.rollback();
 			} catch (SQLException e1) {
 				e1.printStackTrace();
@@ -102,61 +62,24 @@ public class UserServiceImpl implements UserService {
 		return flag;
 	}
 
+	// 用户登录的方法
 	@Override
-	public boolean delete(User user) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean update(User user) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public User login(String userCode, String userPassword) {
+	public User login(String userCode) {
 		Connection connection = null;
 		User user = null;
 		try {
 			connection = BaseDao.getConnection();
 			user = dao.getLoginUser(connection, userCode);
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			BaseDao.closeResource(connection, null, null);
 		}
 
-		// 匹配密码
-		if (null != user) {
-			if (!user.getUserPassword().equals(userPassword)) {
-				user = null;
-			}
-		}
 		return user;
 	}
 
-	@Override
-	public List<User> getUserList(String queryUserName) {
-		Connection connection = null;
-		List<User> userList = null;
-		System.out.println("queryUserName--->" + queryUserName);
-		if (queryUserName == null) {
-			queryUserName = "";
-		}
-
-		try {
-			connection = BaseDao.getConnection();
-			userList = dao.getUserList(connection, queryUserName);
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			BaseDao.closeResource(connection, null, null);
-		}
-		return userList;
-	}
-
+	// 判断用户编码是否存在
 	@Override
 	public User selectUserCodeExist(String userCode) {
 		Connection connection = null;
@@ -172,13 +95,14 @@ public class UserServiceImpl implements UserService {
 		return user;
 	}
 
+	// 通过id删除用户
 	@Override
 	public boolean deleteUserById(Integer delId) {
 		boolean flag = false;
 		Connection connection = null;
 		try {
 			connection = BaseDao.getConnection();
-			flag = dao.deleteUserById(connection, delId);
+			flag = dao.deleteById(connection, delId);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -187,13 +111,14 @@ public class UserServiceImpl implements UserService {
 		return flag;
 	}
 
+	// 修改用户
 	@Override
-	public boolean modifyUser(User user) {
+	public boolean update(User user) {
 		boolean flag = false;
 		Connection connection = null;
 		try {
 			connection = BaseDao.getConnection();
-			flag = dao.modifyUser(connection, user);
+			flag = dao.modify(connection, user);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -202,6 +127,7 @@ public class UserServiceImpl implements UserService {
 		return flag;
 	}
 
+	// 修改密码
 	@Override
 	public boolean updatePwd(Integer id, String pwd) {
 		boolean flag = false;
@@ -226,6 +152,7 @@ public class UserServiceImpl implements UserService {
 		return flag;
 	}
 
+	// 得到分页后的用户列表
 	@Override
 	public List<User> getPageList(String userName, PageUtil pageUtil) {
 		Connection connection = null;
@@ -244,6 +171,7 @@ public class UserServiceImpl implements UserService {
 		return userList;
 	}
 
+	// 得到用户总数
 	@Override
 	public Integer getTotalCount(String userName) {
 		Connection connection = null;

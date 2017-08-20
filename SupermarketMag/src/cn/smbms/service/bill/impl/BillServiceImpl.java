@@ -11,6 +11,9 @@ import cn.smbms.service.bill.BillService;
 import cn.smbms.util.BaseDao;
 import cn.smbms.util.PageUtil;
 
+/**
+ * 账单的业务逻辑层
+ */
 public class BillServiceImpl implements BillService {
 
 	private BillDao billDao;
@@ -19,12 +22,7 @@ public class BillServiceImpl implements BillService {
 		billDao = (BillDao) DaoFactory.getDaoImpl("BillDao");
 	}
 
-	@Override
-	public Integer getTotalCount() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+	// 通过id得到账单对象
 	@Override
 	public Bill getById(Serializable id) {
 		Bill bill = null;
@@ -40,50 +38,14 @@ public class BillServiceImpl implements BillService {
 		return bill;
 	}
 
-	@Override
-	public List<Bill> getList() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<Bill> getList(PageUtil pageUtil) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public boolean add(Bill t) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean delete(Bill t) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean update(Bill t) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public Bill getBillById(String id) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	// 增加账单
 	@Override
-	public boolean addBill(Bill bill) {
+	public boolean add(Bill bill) {
 		boolean flag = false;
 		Connection connection = null;
 		try {
 			connection = BaseDao.getConnection();
-			flag = billDao.addBill(connection, bill);
+			flag = billDao.add(connection, bill);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -94,12 +56,12 @@ public class BillServiceImpl implements BillService {
 
 	// 修改账单
 	@Override
-	public boolean modifyBill(Bill bill) {
+	public boolean update(Bill bill) {
 		boolean flag = false;
 		Connection connection = null;
 		try {
 			connection = BaseDao.getConnection();
-			flag = billDao.modifyBill(connection, bill);
+			flag = billDao.modify(connection, bill);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -115,7 +77,7 @@ public class BillServiceImpl implements BillService {
 		Connection connection = null;
 		try {
 			connection = BaseDao.getConnection();
-			flag = billDao.delBill(connection, id);
+			flag = billDao.deleteById(connection, id);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -149,7 +111,6 @@ public class BillServiceImpl implements BillService {
 			connection = BaseDao.getConnection();
 			pageBillList = billDao.getPageBillList(connection, bill, pageUtil);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
 			BaseDao.closeResource(connection, null, null);

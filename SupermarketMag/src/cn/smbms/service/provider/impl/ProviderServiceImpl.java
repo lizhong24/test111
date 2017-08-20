@@ -13,6 +13,9 @@ import cn.smbms.service.provider.ProviderService;
 import cn.smbms.util.BaseDao;
 import cn.smbms.util.PageUtil;
 
+/**
+ * 供应商的业务逻辑层
+ */
 public class ProviderServiceImpl implements ProviderService {
 
 	private ProviderDao providerDao;
@@ -23,12 +26,7 @@ public class ProviderServiceImpl implements ProviderService {
 		billDao = (BillDao) DaoFactory.getDaoImpl("BillDao");
 	}
 
-	@Override
-	public Integer getTotalCount() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+	// 通过id得到供应商对象
 	@Override
 	public Provider getById(Serializable id) {
 		Connection connection = null;
@@ -44,30 +42,6 @@ public class ProviderServiceImpl implements ProviderService {
 		return provider;
 	}
 
-	@Override
-	public List<Provider> getList() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<Provider> getList(PageUtil pageUtil) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public boolean delete(Provider provider) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean update(Provider provider) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
 	// 增加供应商
 	@Override
 	public boolean add(Provider provider) {
@@ -76,18 +50,11 @@ public class ProviderServiceImpl implements ProviderService {
 		try {
 			connection = BaseDao.getConnection();
 			connection.setAutoCommit(false);// 开启JDBC事务
-			int updateRows = providerDao.add(connection, provider);
+			flag = providerDao.add(connection, provider);
 			connection.commit();
-			if (updateRows > 0) {
-				flag = true;
-				System.out.println("pro   add success!");
-			} else {
-				System.out.println("pro   add failed!");
-			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			try {
-				System.out.println("rollback=================");
 				connection.rollback();
 			} catch (SQLException e1) {
 				e1.printStackTrace();
@@ -104,7 +71,6 @@ public class ProviderServiceImpl implements ProviderService {
 	public List<Provider> getProviderList(String proName) {
 		Connection connection = null;
 		List<Provider> providerList = null;
-		System.out.println("query proName ---- >" + proName);
 		try {
 			connection = BaseDao.getConnection();
 			providerList = providerDao.getProviderList(connection);
@@ -137,7 +103,7 @@ public class ProviderServiceImpl implements ProviderService {
 			connection.setAutoCommit(false);
 			billCount = billDao.getBillCountByProId(connection, delId);
 			if (billCount == 0) {
-				providerDao.deleteProviderById(connection, delId);
+				providerDao.deleteById(connection, delId);
 			}
 			connection.commit();
 		} catch (Exception e) {
@@ -154,22 +120,15 @@ public class ProviderServiceImpl implements ProviderService {
 		return billCount;
 	}
 
-	@Override
-	public Provider getProviderById(String id) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	// 修改供应商
 	@Override
-	public boolean modifyProvider(Provider provider) {
+	public boolean update(Provider provider) {
 		boolean flag = false;
 		Connection connection = null;
 		try {
 			connection = BaseDao.getConnection();
 			flag = providerDao.modify(connection, provider);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
 			BaseDao.closeResource(connection, null, null);

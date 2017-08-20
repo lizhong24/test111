@@ -19,35 +19,6 @@ public interface ProviderDao extends ConDao<Provider> {
 			throws Exception;
 
 	/**
-	 * 通过proId删除Provider
-	 * @param connection
-	 * @param delId
-	 * @return
-	 * @throws Exception
-	 */
-	public boolean deleteProviderById(Connection connection, String delId)
-			throws Exception;
-
-	/**
-	 * 通过proId获取Provider
-	 * @param connection
-	 * @param id
-	 * @return
-	 * @throws Exception
-	 */
-	public Provider getProviderById(Connection connection, String id)
-			throws Exception;
-
-	/**
-	 * 修改用户信息
-	 * @param connection
-	 * @param provider
-	 * @return
-	 * @throws Exception
-	 */
-	boolean modify(Connection connection, Provider provider) throws Exception;
-
-	/**
 	 * 根据分页对象中分页信息，从数据库模糊查询获取对象列表
 	 * @param connection
 	 * @param proName

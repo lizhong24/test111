@@ -1,57 +1,45 @@
 package cn.smbms.dao;
 
+import java.io.Serializable;
 import java.sql.Connection;
-import java.util.List;
 
-import cn.smbms.util.PageUtil;
-
+/**
+ * 公共的接口类
+ *
+ * @param <T>
+ */
 public interface ConDao<T> {
-
-	/**
-	 * 获取数据库数据总记录数
-	 * @return
-	 */
-	Integer getTotalCount(Connection connection) throws Exception;
 
 	/**
 	 * 根据id从数据库获取对应的数据信息，封装成对象
 	 * @param id
 	 * @return
 	 */
-	T getById(Connection connection, java.io.Serializable id) throws Exception;
-
-	/**
-	 * 从数据库获取对象列表
-	 * @return
-	 */
-	List<T> getList(Connection connection) throws Exception;
-
-	/**
-	 * 根据分页对象中分页信息，从数据库获取对象列表
-	 * @param pageUtil
-	 * @return
-	 */
-	List<T> getList(Connection connection, PageUtil pageUtil) throws Exception;
+	T getById(Connection connection, Serializable id) throws Exception;
 
 	/**
 	 * 根据对象携带的信息（没有id），向数据库添加信息
 	 * @param t
 	 * @return
 	 */
-	int add(Connection connection, T t) throws Exception;
+	boolean add(Connection connection, T t) throws Exception;
+
+	/** 修改信息
+	* @param connection
+	* @param t
+	* @return
+	* @throws Exception
+	*/
+	boolean modify(Connection connection, T t) throws Exception;
 
 	/**
-	 * 根据对象携带的id信息，从数据库删除对应信息
-	 * @param t
+	 * 通过id删除
+	 * @param connection
+	 * @param id
 	 * @return
+	 * @throws Exception
 	 */
-	int delete(Connection connection, T t) throws Exception;
-
-	/**
-	 * 根据对象携带的信息和id信息，在数据库修改信息
-	 * @param t
-	 * @return
-	 */
-	int update(Connection connection, T t) throws Exception;
+	public boolean deleteById(Connection connection, Serializable id)
+			throws Exception;
 
 }

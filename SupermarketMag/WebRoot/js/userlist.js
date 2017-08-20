@@ -8,27 +8,25 @@ $(function(){
 	$(".viewUser").on("click",function(){
 		//将被绑定的元素（a）转换成jQuery对象，可以使用jQuery方法
 		var obj = $(this);
-		window.location.href="user.do?method=view&uid="+obj.attr("userid");
+		window.location.href="user.html?method=view&uid="+obj.attr("userid");
 	});
 	
 	$(".modifyUser").on("click",function(){
 		var obj = $(this);
-		window.location.href="user.do?method=modify&uid="+obj.attr("userid");
-	});
-	
+		window.location.href="user.html?method=modify&uid="+obj.attr("userid");
+	});	
 
 	$(".deleteUser").on("click",function(){
 		var obj = $(this);
 		$("#delid").val(obj.attr("userid"));
-		$("#removeUse").show();
-		
+		$("#removeUse").show();		
 	});	
 });
 function delSubmit(){
 	var id=$("#delid").val();
 	$.ajax({
 		type:"GET",
-		url:"user.do",
+		url:"user.html",
 		data:{method:"delUser",uid:id},
 		dataType:"json",
 		success:function(data){

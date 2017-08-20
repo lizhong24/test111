@@ -16,12 +16,6 @@ import com.mysql.jdbc.StringUtils;
 
 public class BillDaoImpl implements BillDao {
 
-	@Override
-	public Integer getTotalCount(Connection connection) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	// 通过id得到账单对象
 	@Override
 	public Bill getById(Connection connection, Serializable id)
@@ -53,37 +47,6 @@ public class BillDaoImpl implements BillDao {
 		return bill;
 	}
 
-	@Override
-	public List<Bill> getList(Connection connection) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<Bill> getList(Connection connection, PageUtil pageUtil)
-			throws Exception {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public int add(Connection connection, Bill t) throws Exception {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int delete(Connection connection, Bill t) throws Exception {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int update(Connection connection, Bill t) throws Exception {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
 	// 根据供应商Id，查询订单数量
 	@Override
 	public int getBillCountByProId(Connection connection, String proId)
@@ -103,15 +66,9 @@ public class BillDaoImpl implements BillDao {
 		return billCount;
 	}
 
-	@Override
-	public Bill getBillById(Connection connection, String id) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	// 增加账单
 	@Override
-	public boolean addBill(Connection connection, Bill bill) throws Exception {
+	public boolean add(Connection connection, Bill bill) throws Exception {
 		boolean flag = false;
 		PreparedStatement pstm = null;
 		if (connection != null) {
@@ -132,8 +89,7 @@ public class BillDaoImpl implements BillDao {
 
 	// 修改账单
 	@Override
-	public boolean modifyBill(Connection connection, Bill bill)
-			throws Exception {
+	public boolean modify(Connection connection, Bill bill) throws Exception {
 		boolean flag = false;
 		PreparedStatement preparedStatement = null;
 		if (connection != null) {
@@ -154,7 +110,8 @@ public class BillDaoImpl implements BillDao {
 
 	// 删除账单
 	@Override
-	public boolean delBill(Connection connection, String id) throws Exception {
+	public boolean deleteById(Connection connection, Serializable id)
+			throws Exception {
 		boolean flag = false;
 		PreparedStatement pstm = null;
 		if (connection != null) {
@@ -199,9 +156,6 @@ public class BillDaoImpl implements BillDao {
 			list.add(pageUtil.getPageSize());
 
 			Object[] params = list.toArray();
-
-			System.out.println(params);
-
 			rs = BaseDao.execute(connection, pstm, rs, sql.toString(), params);
 			while (rs.next()) {
 				Bill _bill = new Bill();
@@ -231,7 +185,6 @@ public class BillDaoImpl implements BillDao {
 		PreparedStatement pstm = null;
 		ResultSet rs = null;
 		Integer billCount = 0;
-
 		if (connection != null) {
 			StringBuffer sql = new StringBuffer();
 			sql.append("select count(1) from smbms_bill b, smbms_provider p where b.providerId = p.id ");
@@ -240,8 +193,6 @@ public class BillDaoImpl implements BillDao {
 				sql.append(" and b.productName like ? ");
 				list.add("%" + bill.getProductName() + "%");
 			}
-
-			System.out.println(bill.getProviderId());
 			if (bill.getProviderId() != null) {
 				sql.append(" and b.providerId=? ");
 				list.add(bill.getProviderId());

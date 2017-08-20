@@ -13,7 +13,7 @@ import cn.smbms.util.Constants;
 /**
  * 退出系统
  */
-@WebServlet("/logout.do")
+@WebServlet("/exit.html")
 public class LogoutServlet extends HttpServlet {
 
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -23,9 +23,9 @@ public class LogoutServlet extends HttpServlet {
 
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-
 		// 清除session
 		request.getSession().removeAttribute(Constants.USER_SESSION);
+		// 返回到登录页面
 		response.sendRedirect("login.jsp");
 	}
 

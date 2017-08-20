@@ -20,36 +20,6 @@ public interface UserDao extends ConDao<User> {
 			throws Exception;
 
 	/**
-	 * 通过userName模糊查询-userList
-	 * @param connection
-	 * @param userName
-	 * @return
-	 * @throws Exception
-	 */
-	public List<User> getUserList(Connection connection, String userName)
-			throws Exception;
-
-	/**
-	 * 通过id删除user
-	 * @param connection
-	 * @param id
-	 * @return
-	 * @throws Exception
-	 */
-	public boolean deleteUserById(Connection connection, Integer delId)
-			throws Exception;
-
-	/**
-	 * 修改user信息
-	 * @param connection
-	 * @param user
-	 * @return
-	 * @throws Exception
-	 */
-	public boolean modifyUser(Connection connection, User user)
-			throws Exception;
-
-	/**
 	 * 修改当前用户密码
 	 * @param connection
 	 * @param id

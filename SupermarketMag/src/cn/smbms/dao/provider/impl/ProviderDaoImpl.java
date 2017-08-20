@@ -15,12 +15,7 @@ import com.mysql.jdbc.PreparedStatement;
 
 public class ProviderDaoImpl implements ProviderDao {
 
-	@Override
-	public Integer getTotalCount(Connection connection) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+	// 通过id得到一个供应商对象
 	@Override
 	public Provider getById(Connection connection, Serializable id)
 			throws Exception {
@@ -48,22 +43,11 @@ public class ProviderDaoImpl implements ProviderDao {
 		return provider;
 	}
 
+	// 增加供应商
 	@Override
-	public List<Provider> getList(Connection connection) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<Provider> getList(Connection connection, PageUtil pageUtil)
+	public boolean add(Connection connection, Provider provider)
 			throws Exception {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public int add(Connection connection, Provider provider) throws Exception {
-		int updateRows = 0;
+		boolean flag = false;
 		PreparedStatement pstm = null;
 		if (connection != null) {
 			String sql = "insert smbms_provider"
@@ -74,24 +58,12 @@ public class ProviderDaoImpl implements ProviderDao {
 					provider.getProPhone(), provider.getProAdderss(),
 					provider.getProFax(), provider.getCreatedBy(),
 					provider.getCreationDate() };
-			updateRows = BaseDao.execute(connection, pstm, sql, params);
+			if (BaseDao.execute(connection, pstm, sql, params) > 0) {
+				flag = true;
+			}
 			BaseDao.closeResource(null, pstm, null);
 		}
-		return updateRows;
-	}
-
-	@Override
-	public int delete(Connection connection, Provider provider)
-			throws Exception {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int update(Connection connection, Provider provider)
-			throws Exception {
-		// TODO Auto-generated method stub
-		return 0;
+		return flag;
 	}
 
 	// 得到去重的供应商列表
@@ -122,14 +94,15 @@ public class ProviderDaoImpl implements ProviderDao {
 		return proList;
 	}
 
+	// 删除供应商
 	@Override
-	public boolean deleteProviderById(Connection connection, String delId)
+	public boolean deleteById(Connection connection, Serializable id)
 			throws Exception {
 		boolean flag = false;
 		PreparedStatement pstm = null;
 		if (connection != null) {
 			String sql = "delete from smbms_provider where id=?";
-			Object[] params = { delId };
+			Object[] params = { id };
 			if (BaseDao.execute(connection, pstm, sql, params) > 0) {
 				flag = true;
 			}
@@ -138,13 +111,7 @@ public class ProviderDaoImpl implements ProviderDao {
 		return flag;
 	}
 
-	@Override
-	public Provider getProviderById(Connection connection, String id)
-			throws Exception {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+	// 修改供应商
 	@Override
 	public boolean modify(Connection connection, Provider provider)
 			throws Exception {
@@ -167,6 +134,7 @@ public class ProviderDaoImpl implements ProviderDao {
 		return flag;
 	}
 
+	// 得到分页后的供应商列表
 	@Override
 	public List<Provider> getPageList(Connection connection, String proName,
 			PageUtil pageUtil) throws Exception {
@@ -196,6 +164,7 @@ public class ProviderDaoImpl implements ProviderDao {
 		return proList;
 	}
 
+	// 模糊查询得到供应商总数
 	@Override
 	public Integer getTotalCount(Connection connection, String proName)
 			throws Exception {

@@ -7,27 +7,6 @@ import cn.smbms.service.ConService;
 import cn.smbms.util.PageUtil;
 
 public interface BillService extends ConService<Bill> {
-	/**
-	 * 通过billId获取Bill
-	 * @param id
-	 * @return
-	 * @throws Exception
-	 */
-	public Bill getBillById(String id);
-
-	/**
-	 * 增加Bill
-	 * @param bill
-	 * @return
-	 */
-	public boolean addBill(Bill bill);
-
-	/**
-	 * 修改订单信息
-	 * @param bill
-	 * @return
-	 */
-	public boolean modifyBill(Bill bill);
 
 	/**
 	 * 通过id，删除订单

@@ -36,7 +36,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
     <div class="publicHeaderR">
         <p><span>下午好！</span><span style="color: #fff21b">${userSession.userName}</span> , 欢迎你！</p>
-        <a href="login.jsp">退出</a>
+        <a href="exit.html">退出</a>
     </div>
 </header>
 <!--时间-->
@@ -50,11 +50,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         <h2 class="leftH2"><span class="span1"></span>功能列表 <span></span></h2>
         <nav>
             <ul class="list">
-                <li><a href="bill.html?method=query">账单管理</a></li>
-                <li id="active"><a href="provider.html?method=query">供应商管理</a></li>
-                <li><a href="user.do?method=query">用户管理</a></li>
-                <li><a href="password.html">密码修改</a></li>
-                <li><a href="login.jsp">退出系统</a></li>
+                <li><a href="bill.html">账单管理</a></li>
+                <li id="active"><a href="provider.html">供应商管理</a></li>
+                <li><a href="user.html">用户管理</a></li>
+                <li><a href="jsp/pwdmodify.jsp">密码修改</a></li>
+                <li><a href="exit.html">退出系统</a></li>
             </ul>
         </nav>
     </div>

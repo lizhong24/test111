@@ -10,30 +10,12 @@ import cn.smbms.bean.User;
 import cn.smbms.dao.user.UserDao;
 import cn.smbms.util.BaseDao;
 import cn.smbms.util.PageUtil;
-import cn.smbms.util.ResultSetUtil;
 
 import com.mysql.jdbc.PreparedStatement;
 
 public class UserDaoImpl implements UserDao {
 
-	@Override
-	public Integer getTotalCount(Connection connection) throws Exception {
-
-		PreparedStatement pstm = null;
-		ResultSet rs = null;
-		Integer totalCounts = 0;
-		if (connection != null) {
-			String sql = "select  count(1)  from smbms_user";
-			rs = BaseDao.execute(connection, pstm, rs, sql);
-			if (rs.next()) {
-				totalCounts = rs.getInt(1);
-			}
-			BaseDao.closeResource(null, pstm, rs);
-		}
-
-		return totalCounts;
-	}
-
+	// 通过id得到一个user对象
 	@Override
 	public User getById(Connection connection, Serializable id)
 			throws Exception {
@@ -65,37 +47,11 @@ public class UserDaoImpl implements UserDao {
 		return user;
 	}
 
+	// 增加用户
 	@Override
-	public List<User> getList(Connection connection) throws Exception {
-		return null;
-	}
-
-	@Override
-	public List<User> getList(Connection connection, PageUtil pageUtil)
-			throws Exception {
-
+	public boolean add(Connection connection, User user) throws Exception {
 		PreparedStatement pstm = null;
-		ResultSet rs = null;
-		List<User> userList = null;
-		if (connection != null) {
-			String sql = "select * from smbms_user limit ?,?";
-			Object[] params = {
-					(pageUtil.getPageIndex() - 1) * pageUtil.getPageSize(),
-					pageUtil.getPageSize() };
-			rs = BaseDao.execute(connection, pstm, rs, sql, params);
-			try {
-				userList = ResultSetUtil.eachResultSet(rs, User.class);
-			} finally {
-				BaseDao.closeResource(null, pstm, rs);
-			}
-		}
-		return userList;
-	}
-
-	@Override
-	public int add(Connection connection, User user) throws Exception {
-		PreparedStatement pstm = null;
-		int updateRows = 0;
+		boolean flag = false;
 		if (null != connection) {
 			String sql = "insert into smbms_user(userCode,userName,userPassword,"
 					+ "userType,gender,birthday,phone,address,creationDate,createBy) values(?,?,?,?,?,?,?,?,?,?)";
@@ -104,25 +60,15 @@ public class UserDaoImpl implements UserDao {
 					user.getGender(), user.getBirthday(), user.getPhone(),
 					user.getAddress(), user.getCreationDate(),
 					user.getCreateBy() };
-			updateRows = BaseDao.execute(connection, pstm, sql, params);
+			if (BaseDao.execute(connection, pstm, sql, params) > 0) {
+				flag = true;
+			}
 			BaseDao.closeResource(null, pstm, null);
 		}
-
-		return updateRows;
+		return flag;
 	}
 
-	@Override
-	public int delete(Connection connection, User user) throws Exception {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int update(Connection connection, User user) throws Exception {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
+	// 用户登录的方法
 	@Override
 	public User getLoginUser(Connection connection, String userCode)
 			throws Exception {
@@ -151,45 +97,18 @@ public class UserDaoImpl implements UserDao {
 			}
 			BaseDao.closeResource(null, pstm, rs);
 		}
-
 		return user;
 	}
 
+	// 删除用户
 	@Override
-	public List<User> getUserList(Connection connection, String userName)
-			throws Exception {
-		PreparedStatement pstm = null;
-		ResultSet rs = null;
-		List<User> userList = new ArrayList<User>();
-		if (connection != null) {
-			String sql = "select * from smbms_user where userName like ?";
-			Object[] params = { "%" + userName + "%" };
-			rs = BaseDao.execute(connection, pstm, rs, sql, params);
-			while (rs.next()) {
-				User _user = new User();
-				_user.setId(rs.getInt("id"));
-				_user.setUserCode(rs.getString("userCode"));
-				_user.setUserName(rs.getString("userName"));
-				_user.setGender(rs.getInt("gender"));
-				_user.setBirthday(rs.getDate("birthday"));
-				_user.setPhone(rs.getString("phone"));
-				_user.setUserType(rs.getInt("userType"));
-
-				userList.add(_user);
-			}
-			BaseDao.closeResource(null, pstm, rs);
-		}
-		return userList;
-	}
-
-	@Override
-	public boolean deleteUserById(Connection connection, Integer delId)
+	public boolean deleteById(Connection connection, Serializable id)
 			throws Exception {
 		boolean flag = false;
 		PreparedStatement pstm = null;
 		if (connection != null) {
 			String sql = "delete from smbms_user where id=?";
-			Object[] params = { delId };
+			Object[] params = { id };
 			if (BaseDao.execute(connection, pstm, sql, params) > 0) {
 				flag = true;
 			}
@@ -198,9 +117,9 @@ public class UserDaoImpl implements UserDao {
 		return flag;
 	}
 
+	// 修改用户
 	@Override
-	public boolean modifyUser(Connection connection, User user)
-			throws Exception {
+	public boolean modify(Connection connection, User user) throws Exception {
 		boolean flag = false;
 		PreparedStatement pstm = null;
 		if (connection != null) {
@@ -219,6 +138,7 @@ public class UserDaoImpl implements UserDao {
 		return flag;
 	}
 
+	// 修改密码
 	@Override
 	public boolean updatePwd(Connection connection, Integer id, String pwd)
 			throws Exception {
@@ -235,6 +155,7 @@ public class UserDaoImpl implements UserDao {
 		return flag;
 	}
 
+	// 得到分页后的用户列表
 	@Override
 	public List<User> getPageList(Connection connection, String userName,
 			PageUtil pageUtil) throws Exception {
@@ -263,6 +184,7 @@ public class UserDaoImpl implements UserDao {
 		return userList;
 	}
 
+	// 得到用户总数
 	@Override
 	public Integer getTotalCount(Connection connection, String userName)
 			throws Exception {

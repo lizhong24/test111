@@ -34,7 +34,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         <h1>超市账单管理系统</h1>
         <div class="publicHeaderR">
             <p><span>下午好！</span><span style="color: #fff21b"> ${userSession.userName }</span> , 欢迎你！</p>
-            <a href="welcome.jsp">退出</a>
+            <a href="exit.html">退出</a>
         </div>
     </header>
 <!--时间-->
@@ -48,12 +48,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         <div class="left">
             <h2 class="leftH2"><span class="span1"></span>功能列表 <span></span></h2>
             <nav>
-                <ul class="list">
-                    <li><a href="billList.html">账单管理</a></li>
-                    <li><a href="providerList.html">供应商管理</a></li>
-                    <li  id="active"><a href="user.do?method=query">用户管理</a></li>
-                    <li><a href="password.html">密码修改</a></li>
-                    <li><a href="login.jsp">退出系统</a></li>
+                <ul class="list">                   
+                    <li><a href="bill.html">账单管理</a></li>
+	                <li ><a href="provider.html">供应商管理</a></li>
+	                <li id="active"><a href="user.html">用户管理</a></li>
+	                <li><a href="jsp/pwdmodify.jsp">密码修改</a></li>
+	                <li><a href="exit.html">退出系统</a></li>                   
                 </ul>
             </nav>
         </div>
@@ -64,7 +64,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             </div>
             <div class="search">
              
-			<form action="user.do" method="post" name="queryUser" id="queryUser">
+			<form action="user.html" method="post" name="queryUser" id="queryUser">
                 <input name="method" value="query" class="input-text" type="hidden"/>
                 <input type="hidden" name="method" value="delUser">
                 <span>用户名：</span>

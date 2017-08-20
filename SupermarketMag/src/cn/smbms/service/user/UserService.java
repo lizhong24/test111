@@ -14,14 +14,7 @@ public interface UserService extends ConService<User> {
 	 * @param userPassword
 	 * @return
 	 */
-	public User login(String userCode, String userPassword);
-
-	/**
-	 * 查询用户列表
-	 * @param queryUserName
-	 * @return
-	 */
-	public List<User> getUserList(String queryUserName);
+	public User login(String userCode);
 
 	/**
 	 * 根据userCode查询出User
@@ -36,13 +29,6 @@ public interface UserService extends ConService<User> {
 	 * @return
 	 */
 	public boolean deleteUserById(Integer delId);
-
-	/**
-	 * 修改user信息
-	 * @param user
-	 * @return
-	 */
-	public boolean modifyUser(User user);
 
 	/**
 	 * 根据userId修改密码

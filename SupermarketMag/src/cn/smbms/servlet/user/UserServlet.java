@@ -2,6 +2,7 @@ package cn.smbms.servlet.user;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -18,12 +19,16 @@ import cn.smbms.bean.User;
 import cn.smbms.service.ServiceFactory;
 import cn.smbms.service.user.UserService;
 import cn.smbms.util.Constants;
+import cn.smbms.util.MD5Encrypt;
 import cn.smbms.util.PageUtil;
 
 import com.alibaba.fastjson.JSONArray;
 import com.mysql.jdbc.StringUtils;
 
-@WebServlet("/user.do")
+/**
+ * 操作用户的控制层
+ */
+@WebServlet("/user.html")
 public class UserServlet extends HttpServlet {
 
 	private UserService service = (UserService) ServiceFactory
@@ -36,11 +41,8 @@ public class UserServlet extends HttpServlet {
 
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-
+		// 通过前台得到用户传过来的方法method
 		String method = request.getParameter("method");
-
-		System.out.println("method----->" + method);
-
 		if (method != null && method.equals("add")) {// 增加操作
 			this.add(request, response);
 		} else if (method != null && method.equals("query")) {// 查询用户列表
@@ -49,20 +51,19 @@ public class UserServlet extends HttpServlet {
 			this.userCodeExist(request, response);
 		} else if (method != null && method.equals("delUser")) {// 删除用户
 			this.delUser(request, response);
-		} else if (method != null && method.equals("view")) {// 查看用户
+		} else if (method != null && method.equals("view")) {// 跳转到查看用户的页面
 			this.getUserById(request, response, "jsp/userview.jsp");
-		} else if (method != null && method.equals("modify")) {// 查看用户
-			this.getUserById(request, response, "jsp/usermodify.jsp");
+		} else if (method != null && method.equals("modify")) {// 跳转到修改用户的页面
+			this.getUserById(request, response, "jsp/userupdate.jsp");
 		} else if (method != null && method.equals("modifyexe")) {// 修改用户
 			this.modifyUser(request, response);
-		} else if (method != null && method.equals("pwdmodify")) {
+		} else if (method != null && method.equals("pwdmodify")) {// 找到旧密码
 			this.getPwdByUserId(request, response);
-		} else if (method != null && method.equals("savepwd")) {
+		} else if (method != null && method.equals("savepwd")) {// 修改密码
 			this.updatePwd(request, response);
 		} else {
 			this.query(request, response);
 		}
-
 	}
 
 	// 修改密码
@@ -70,13 +71,20 @@ public class UserServlet extends HttpServlet {
 			HttpServletResponse response) throws ServletException, IOException {
 		Object o = request.getSession().getAttribute(Constants.USER_SESSION);
 		String newpassword = request.getParameter("newpassword");
+		// newpassword= MD5Encrypt.getEncryptedPwd(newpassword);
 		boolean flag = false;
 		if (o != null && !StringUtils.isNullOrEmpty(newpassword)) {
-			flag = service.updatePwd(((User) o).getId(), newpassword);
+			try {
+				flag = service.updatePwd(((User) o).getId(),
+						MD5Encrypt.getEncryptedPwd(newpassword));
+			} catch (NoSuchAlgorithmException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			if (flag) {
 				request.setAttribute(Constants.SYS_MESSAGE, "修改密码成功！");
 				// 密码修改成功后跳转到登录页面，重新登录！！
-				request.getRequestDispatcher("logout.do").forward(request,
+				request.getRequestDispatcher("exit.html").forward(request,
 						response);
 			} else {
 				request.setAttribute(Constants.SYS_MESSAGE, "修改密码失败！");
@@ -101,10 +109,15 @@ public class UserServlet extends HttpServlet {
 		HashMap<String, String> resuleMap = new HashMap<String, String>();
 		if (null != o && !StringUtils.isNullOrEmpty(oldpassword)) {
 			String sessionPwd = ((User) o).getUserPassword();
-			if (oldpassword.equals(sessionPwd)) {
-				resuleMap.put("result", "true");
-			} else {
-				resuleMap.put("result", "false");
+			try {
+				if (MD5Encrypt.validatePassword(oldpassword, sessionPwd)) {
+					resuleMap.put("result", "true");
+				} else {
+					resuleMap.put("result", "false");
+				}
+			} catch (NoSuchAlgorithmException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		} else {
 			resuleMap.put("result", "error");
@@ -144,11 +157,11 @@ public class UserServlet extends HttpServlet {
 				Constants.USER_SESSION)).getId());
 		user.setModifyDate(new Date());
 
-		if (service.modifyUser(user)) {
-			request.getRequestDispatcher("user.do?method=query").forward(
+		if (service.update(user)) {
+			request.getRequestDispatcher("user.html?method=query").forward(
 					request, response);
 		} else {
-			request.getRequestDispatcher("jsp/usermodify.jsp").forward(request,
+			request.getRequestDispatcher("jsp/userupdate.jsp").forward(request,
 					response);
 		}
 
@@ -165,7 +178,6 @@ public class UserServlet extends HttpServlet {
 			request.setAttribute("user", user);
 			request.getRequestDispatcher(url).forward(request, response);
 		}
-
 	}
 
 	// 删除用户
@@ -185,13 +197,8 @@ public class UserServlet extends HttpServlet {
 		} else {
 			if (service.deleteUserById(delId)) {
 				resultMap.put("delResult", "true");
-				// request.getRequestDispatcher("user.do?method=query").forward(
-				// request, response);
-
 			} else {
 				resultMap.put("delResult", "false");
-				// request.getRequestDispatcher("jsp/userlist.jsp").forward(
-				// request, response);
 			}
 		}
 
@@ -207,28 +214,25 @@ public class UserServlet extends HttpServlet {
 	private void userCodeExist(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		String userCode = request.getParameter("userCode");
-
-		HashMap<String, String> resuleMap = new HashMap<String, String>();
-
+		HashMap<String, String> resultMap = new HashMap<String, String>();
 		if (StringUtils.isNullOrEmpty(userCode)) {
 			// userCode == null || userCode.equals("")
-			resuleMap.put("userCode", "exist");
+			resultMap.put("userCode", "exist");
 		} else {
 			User user = service.selectUserCodeExist(userCode);
 			if (null != user) {
-				resuleMap.put("userCode", "exist");
+				resultMap.put("userCode", "exist");
 			} else {
-				resuleMap.put("userCode", "notexist");
+				resultMap.put("userCode", "notexist");
 			}
 		}
 
 		// 把resultMap转为json字符串以json的形式输出
-		// 配置上下文的输出类型
 		response.setContentType("appliaction/json");// 配置上下文的输出类型
 		// 从response对象中获取往外输出的writer对象
 		PrintWriter outPrintWriter = response.getWriter();
 		// 把resultMap转为json字符串输出
-		outPrintWriter.write(JSONArray.toJSONString(resuleMap));
+		outPrintWriter.write(JSONArray.toJSONString(resultMap));
 		outPrintWriter.flush();// 刷新
 		outPrintWriter.close();// 关闭流
 	}
@@ -236,7 +240,6 @@ public class UserServlet extends HttpServlet {
 	// 增加操作
 	private void add(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		System.out.println("add()=============");
 		String userCode = request.getParameter("userCode");
 		String userName = request.getParameter("userName");
 		String userPassword = request.getParameter("userPassword");
@@ -249,7 +252,11 @@ public class UserServlet extends HttpServlet {
 		User user = new User();
 		user.setUserCode(userCode);
 		user.setUserName(userName);
-		user.setUserPassword(userPassword);
+		try {
+			user.setUserPassword(MD5Encrypt.getEncryptedPwd(userPassword));
+		} catch (NoSuchAlgorithmException e1) {
+			e1.printStackTrace();
+		}
 		user.setAddress(address);
 		try {
 			user.setBirthday(new SimpleDateFormat("yyyy-MM-dd").parse(birthday));
@@ -263,8 +270,8 @@ public class UserServlet extends HttpServlet {
 		user.setCreateBy(((User) request.getSession().getAttribute(
 				Constants.USER_SESSION)).getId());
 
-		if (service.add(user)) {
-			request.getRequestDispatcher("user.do?method=query").forward(
+		if (service.add(user)) {// 增加成功
+			request.getRequestDispatcher("user.html?method=query").forward(
 					request, response);
 		} else {
 			request.getRequestDispatcher("jsp/useradd.jsp").forward(request,
@@ -276,8 +283,7 @@ public class UserServlet extends HttpServlet {
 	// 查询用户列表
 	private void query(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		String queryUserName = request.getParameter("queryUserName");
-
+		String queryUserName = request.getParameter("queryUserName");// 用户输入的用户名
 		String num = request.getParameter("pageIndex");
 		// 实例化分页的工具类
 		PageUtil pageUtil = new PageUtil();
@@ -287,14 +293,13 @@ public class UserServlet extends HttpServlet {
 			pageUtil.setPageIndex(1);
 		}
 		// 给总记录数赋值 的同时 也给 总页数 赋值了
-
 		int totalCount = service.getTotalCount(queryUserName);
 		pageUtil.setTotalCount(totalCount);// 总记录数赋值
 
-		// 分页显示 新闻信息
+		// 分页显示新闻信息
 		List<User> userList = service.getPageList(queryUserName, pageUtil);
 		if (userList != null) {
-			// 还是要把集合放进 作用域中 便于前台获取
+			// 还是要把集合放进作用域中，便于前台获取
 			request.setAttribute("userList", userList);
 			request.setAttribute("queryUserName", queryUserName);
 			// 把分页的工具类对象页得放进作用域中

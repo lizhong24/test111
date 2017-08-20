@@ -29,20 +29,6 @@ public interface ProviderService extends ConService<Provider> {
 	public int deleteProviderById(String delId);
 
 	/**
-	 * 通过proId获取Provider
-	 * @param id
-	 * @return
-	 */
-	public Provider getProviderById(String id);
-
-	/**
-	 * 修改provider信息
-	 * @param provider
-	 * @return
-	 */
-	public boolean modifyProvider(Provider provider);
-
-	/**
 	 * 根据分页对象中分页信息，从数据库模糊查询获取对象列表
 	 * @param proName
 	 * @param pageUtil
