@@ -42,16 +42,16 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         <h2 class="leftH2"><span class="span1"></span>功能列表 <span></span></h2>
         <nav>
             <ul class="list">
-                <li ><a href="bill.html">账单管理</a></li>
-                <li><a href="provider.html">供应商管理</a></li>
-                <li><a href="user.html">用户管理</a></li>
+                <li ><a href="jsp/billlist.jsp">账单管理</a></li>
+                <li><a href="jsp/providerlist.jsp">供应商管理</a></li>
+                <li><a href="jsp/userlist.jsp">用户管理</a></li>
                 <li><a href="jsp/pwdmodify.jsp">密码修改</a></li>
                 <li><a href="exit.html">退出系统</a></li>
             </ul>
         </nav>
     </div>
     <div class="right">
-        <img class="wColck" src="images/clock.jpg" alt=""/>
+        <img class="wColck" src="img/clock.jpg" alt=""/>
         <div class="wFont">
             <h2>${userSession.userName}</h2>
             <p>欢迎来到超市账单管理系统!</p>

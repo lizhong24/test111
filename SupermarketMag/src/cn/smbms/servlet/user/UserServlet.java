@@ -15,6 +15,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
+
 import cn.smbms.bean.User;
 import cn.smbms.service.ServiceFactory;
 import cn.smbms.service.user.UserService;
@@ -22,7 +24,9 @@ import cn.smbms.util.Constants;
 import cn.smbms.util.MD5Encrypt;
 import cn.smbms.util.PageUtil;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.google.gson.Gson;
 import com.mysql.jdbc.StringUtils;
 
 /**
@@ -30,6 +34,8 @@ import com.mysql.jdbc.StringUtils;
  */
 @WebServlet("/user.html")
 public class UserServlet extends HttpServlet {
+
+	private Logger logger = Logger.getLogger(UserServlet.class);
 
 	private UserService service = (UserService) ServiceFactory
 			.getServiceImpl("UserService");
@@ -71,7 +77,6 @@ public class UserServlet extends HttpServlet {
 			HttpServletResponse response) throws ServletException, IOException {
 		Object o = request.getSession().getAttribute(Constants.USER_SESSION);
 		String newpassword = request.getParameter("newpassword");
-		// newpassword= MD5Encrypt.getEncryptedPwd(newpassword);
 		boolean flag = false;
 		if (o != null && !StringUtils.isNullOrEmpty(newpassword)) {
 			try {
@@ -102,7 +107,6 @@ public class UserServlet extends HttpServlet {
 	// 通过当前用户id得到当前用户密码
 	private void getPwdByUserId(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-
 		// 先判断session是否失效！！！！！
 		Object o = request.getSession().getAttribute(Constants.USER_SESSION);
 		String oldpassword = request.getParameter("oldpassword");
@@ -158,8 +162,8 @@ public class UserServlet extends HttpServlet {
 		user.setModifyDate(new Date());
 
 		if (service.update(user)) {
-			request.getRequestDispatcher("user.html?method=query").forward(
-					request, response);
+			request.getRequestDispatcher("jsp/userlist.jsp").forward(request,
+					response);
 		} else {
 			request.getRequestDispatcher("jsp/userupdate.jsp").forward(request,
 					response);
@@ -191,23 +195,15 @@ public class UserServlet extends HttpServlet {
 			e.printStackTrace();
 			delId = 0;
 		}
-		HashMap<String, String> resultMap = new HashMap<String, String>();
-		if (delId <= 0) {
-			resultMap.put("delResult", "notexist");
-		} else {
-			if (service.deleteUserById(delId)) {
-				resultMap.put("delResult", "true");
-			} else {
-				resultMap.put("delResult", "false");
-			}
-		}
 
-		// 把resultMap转换成json对象输出
-		response.setContentType("application/json");
-		PrintWriter outPrintWriter = response.getWriter();
-		outPrintWriter.write(JSONArray.toJSONString(resultMap));
-		outPrintWriter.flush();
-		outPrintWriter.close();
+		logger.debug(delId);
+		if (service.deleteUserById(delId)) {
+			request.getRequestDispatcher("jsp/userlist.jsp").forward(request,
+					response);
+		} else {
+			request.getRequestDispatcher("jsp/error.jsp").forward(request,
+					response);
+		}
 	}
 
 	// 判断用户账号是否可用
@@ -271,8 +267,8 @@ public class UserServlet extends HttpServlet {
 				Constants.USER_SESSION)).getId());
 
 		if (service.add(user)) {// 增加成功
-			request.getRequestDispatcher("user.html?method=query").forward(
-					request, response);
+			request.getRequestDispatcher("jsp/userlist.jsp").forward(request,
+					response);
 		} else {
 			request.getRequestDispatcher("jsp/useradd.jsp").forward(request,
 					response);
@@ -283,8 +279,12 @@ public class UserServlet extends HttpServlet {
 	// 查询用户列表
 	private void query(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		request.setCharacterEncoding("utf-8");
+		response.setContentType("text/html;charset=utf-8");
+
 		String queryUserName = request.getParameter("queryUserName");// 用户输入的用户名
 		String num = request.getParameter("pageIndex");
+		request.setAttribute("queryUserName", queryUserName);
 		// 实例化分页的工具类
 		PageUtil pageUtil = new PageUtil();
 		if (num != null && !num.equals("")) { // 给当前页赋值
@@ -293,21 +293,24 @@ public class UserServlet extends HttpServlet {
 			pageUtil.setPageIndex(1);
 		}
 		// 给总记录数赋值 的同时 也给 总页数 赋值了
-		int totalCount = service.getTotalCount(queryUserName);
+		Integer totalCount = service.getTotalCount(queryUserName);
 		pageUtil.setTotalCount(totalCount);// 总记录数赋值
 
 		// 分页显示新闻信息
 		List<User> userList = service.getPageList(queryUserName, pageUtil);
-		if (userList != null) {
-			// 还是要把集合放进作用域中，便于前台获取
-			request.setAttribute("userList", userList);
-			request.setAttribute("queryUserName", queryUserName);
-			// 把分页的工具类对象页得放进作用域中
-			request.setAttribute("pageUtil", pageUtil);
-			request.getRequestDispatcher("jsp/userlist.jsp").forward(request,
-					response);
-		} else {
-			System.out.println("出现异常！");
+		if (userList != null && userList.size() > 0) {
+			userList.get(0).setPageUtil(pageUtil); // 给分页的属性赋值
 		}
+		// 需要把list整体转换成json格式的数据 传递给前台
+		Gson gson = new Gson();
+		String json = gson.toJson(userList);
+		System.out.println(json);
+		response.setHeader("content-type", "text/html;charset=utf-8");
+		PrintWriter writer = response.getWriter();
+		writer.print(json);
+		writer.close();
+		writer.flush();
+
+		logger.debug(JSON.toJSON(userList));
 	}
 }

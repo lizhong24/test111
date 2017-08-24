@@ -6,6 +6,8 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import cn.smbms.bean.Provider;
 import cn.smbms.dao.provider.ProviderDao;
 import cn.smbms.util.BaseDao;
@@ -14,6 +16,8 @@ import cn.smbms.util.PageUtil;
 import com.mysql.jdbc.PreparedStatement;
 
 public class ProviderDaoImpl implements ProviderDao {
+
+	private Logger log = Logger.getLogger(ProviderDaoImpl.class);
 
 	// 通过id得到一个供应商对象
 	@Override
@@ -40,6 +44,7 @@ public class ProviderDaoImpl implements ProviderDao {
 			}
 			BaseDao.closeResource(null, pstm, rs);
 		}
+		log.debug(provider);
 		return provider;
 	}
 
@@ -63,6 +68,8 @@ public class ProviderDaoImpl implements ProviderDao {
 			}
 			BaseDao.closeResource(null, pstm, null);
 		}
+		log.debug(provider);
+		log.debug(flag);
 		return flag;
 	}
 
@@ -91,6 +98,7 @@ public class ProviderDaoImpl implements ProviderDao {
 			}
 			BaseDao.closeResource(null, pstm, rs);
 		}
+		log.debug(proList);
 		return proList;
 	}
 
@@ -108,6 +116,7 @@ public class ProviderDaoImpl implements ProviderDao {
 			}
 			BaseDao.closeResource(null, pstm, null);
 		}
+		log.debug(flag);
 		return flag;
 	}
 
@@ -131,6 +140,8 @@ public class ProviderDaoImpl implements ProviderDao {
 			}
 			BaseDao.closeResource(null, pstm, null);
 		}
+		log.debug(provider);
+		log.debug(flag);
 		return flag;
 	}
 
@@ -161,6 +172,7 @@ public class ProviderDaoImpl implements ProviderDao {
 			}
 			BaseDao.closeResource(null, pstm, rs);
 		}
+		log.debug(proList);
 		return proList;
 	}
 
@@ -180,6 +192,7 @@ public class ProviderDaoImpl implements ProviderDao {
 			}
 			BaseDao.closeResource(null, pstm, rs);
 		}
+		log.debug(totalCounts);
 		return totalCounts;
 	}
 

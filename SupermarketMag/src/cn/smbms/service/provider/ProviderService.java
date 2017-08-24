@@ -26,7 +26,7 @@ public interface ProviderService extends ConService<Provider> {
 	 * @param delId
 	 * @return
 	 */
-	public int deleteProviderById(String delId);
+	public Integer deleteProviderById(String delId);
 
 	/**
 	 * 根据分页对象中分页信息，从数据库模糊查询获取对象列表

@@ -3,6 +3,8 @@ package cn.smbms.bean;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import cn.smbms.util.PageUtil;
+
 public class Bill {
 	private Integer id;// id
 	private String billCode;// 账单编码
@@ -19,6 +21,16 @@ public class Bill {
 	private Integer modifyBy;// 更新者
 	private String providerName; // 供应商名称
 
+	private PageUtil pageUtil; // 分页工具对象
+
+	public PageUtil getPageUtil() {
+		return pageUtil;
+	}
+
+	public void setPageUtil(PageUtil pageUtil) {
+		this.pageUtil = pageUtil;
+	}
+
 	public Bill() {
 		super();
 	}
@@ -27,7 +39,7 @@ public class Bill {
 			String productDesc, String productUnit, BigDecimal productCount,
 			BigDecimal totalPrice, Integer isPayment, Integer providerId,
 			Date creationDate, Integer createdBy, Date modifyDate,
-			Integer modifyBy, String providerName) {
+			Integer modifyBy, String providerName, PageUtil pageUtil) {
 		super();
 		this.id = id;
 		this.billCode = billCode;
@@ -43,6 +55,7 @@ public class Bill {
 		this.modifyDate = modifyDate;
 		this.modifyBy = modifyBy;
 		this.providerName = providerName;
+		this.pageUtil = pageUtil;
 	}
 
 	public String getProviderName() {
@@ -166,7 +179,7 @@ public class Bill {
 				+ isPayment + ", providerId=" + providerId + ", creationDate="
 				+ creationDate + ", createdBy=" + createdBy + ", modifyDate="
 				+ modifyDate + ", modifyBy=" + modifyBy + ", providerName="
-				+ providerName + "]";
+				+ providerName + ", pageUtil=" + pageUtil + "]";
 	}
 
 }

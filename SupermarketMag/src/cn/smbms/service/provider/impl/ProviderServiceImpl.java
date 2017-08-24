@@ -95,7 +95,7 @@ public class ProviderServiceImpl implements ProviderService {
 	 * 若billCount >= 0 成功
 	 */
 	@Override
-	public int deleteProviderById(String delId) {
+	public Integer deleteProviderById(String delId) {
 		Connection connection = null;
 		int billCount = -1;
 		try {

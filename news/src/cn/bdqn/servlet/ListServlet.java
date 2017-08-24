@@ -1,6 +1,7 @@
 package cn.bdqn.servlet;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -14,6 +15,8 @@ import cn.bdqn.service.ServiceFactory;
 import cn.bdqn.service.newsdetail.NewsDetailService;
 import cn.bdqn.util.PageUtil;
 
+import com.google.gson.Gson;
+
 @WebServlet("/listServlet")
 public class ListServlet extends HttpServlet {
 
@@ -26,6 +29,7 @@ public class ListServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
+		response.setContentType("text/html;charset=utf-8");
 		// 调用service层获取所有新闻列表的方法
 		NewsDetailService service = (NewsDetailService) ServiceFactory
 				.getServiceImpl("NewsDetailService");
@@ -55,11 +59,15 @@ public class ListServlet extends HttpServlet {
 		// 分页显示新闻信息
 		List<News_Detail> details = service.findPageList(util);
 		if (details != null) {
-			// 还是要把集合放进 作用域中 便于前台获取
-			request.setAttribute("details", details);
-			// 把分页的工具类对象也得放进作用域中
-			request.setAttribute("pageUtil", util);
-			request.getRequestDispatcher("main.jsp").forward(request, response);
+			// 创建Gson
+			Gson gson = new Gson();
+			// 需要把pageUtil放进集合第一个对象中
+			details.get(0).setPageUtil(util);
+			String json = gson.toJson(details);
+			PrintWriter writer = response.getWriter();
+			response.setHeader("Content-type", "text/html;charset=utf-8");
+			writer.print(json);
+			writer.close();
 		} else {
 			System.out.println("出现异常！");
 		}

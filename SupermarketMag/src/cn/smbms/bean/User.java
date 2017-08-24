@@ -2,6 +2,8 @@ package cn.smbms.bean;
 
 import java.util.Date;
 
+import cn.smbms.util.PageUtil;
+
 public class User {
 	private Integer id;// id
 	private String userCode;// 用户编码
@@ -17,15 +19,14 @@ public class User {
 	private Integer modifyBy;// 更新者
 	private Date modifyDate;// 更新时间
 
-	private Integer age;// 年龄
+	private PageUtil pageUtil; // 分页工具对象
 
-	@SuppressWarnings("deprecation")
-	public Integer getAge() {
-		/*long time = System.currentTimeMillis()-birthday.getTime();
-		int age = Long.valueOf(time/365/24/60/60/1000).intValue();*/
-		Date date = new Date();
-		Integer age = date.getYear() - birthday.getYear();
-		return age;
+	public PageUtil getPageUtil() {
+		return pageUtil;
+	}
+
+	public void setPageUtil(PageUtil pageUtil) {
+		this.pageUtil = pageUtil;
 	}
 
 	public Integer getId() {
@@ -135,7 +136,8 @@ public class User {
 	public User(Integer id, String userCode, String userName,
 			String userPassword, Integer gender, Date birthday, String phone,
 			String address, Integer userType, Integer createBy,
-			Date creationDate, Integer modifyBy, Date modifyDate, Integer age) {
+			Date creationDate, Integer modifyBy, Date modifyDate,
+			PageUtil pageUtil, Integer age) {
 		super();
 		this.id = id;
 		this.userCode = userCode;
@@ -150,7 +152,7 @@ public class User {
 		this.creationDate = creationDate;
 		this.modifyBy = modifyBy;
 		this.modifyDate = modifyDate;
-		this.age = age;
+		this.pageUtil = pageUtil;
 	}
 
 	public User() {
@@ -165,7 +167,7 @@ public class User {
 				+ ", address=" + address + ", userType=" + userType
 				+ ", createBy=" + createBy + ", creationDate=" + creationDate
 				+ ", modifyBy=" + modifyBy + ", modifyDate=" + modifyDate
-				+ ", age=" + age + "]";
+				+ ", pageUtil=" + pageUtil + "]";
 	}
 
 }

@@ -5,13 +5,13 @@
 
 /*登录页面*/
 .login_bg {
-    background: url("../images/loginBg.jpg") 0 0 repeat-x;
+    background: url("../img/loginBg.jpg") 0 0 repeat-x;
 }
 
 .loginBox {
     width: 1000px;
     margin: 0 auto;
-    background: url("../images/login_bg.jpg") 0 0 no-repeat;
+    background: url("../img/login_bg.jpg") 0 0 no-repeat;
 }
 
 .loginHeader {
@@ -53,7 +53,7 @@ input {
 }
 
 .loginForm {
-    background: url("../images/formBg.png") 0 0 no-repeat;
+    background: url("../img/formBg.png") 0 0 no-repeat;
     width: 320px;
     height: 140px;
     border-radius: 8px;

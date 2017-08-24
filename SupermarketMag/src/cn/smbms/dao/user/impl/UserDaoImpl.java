@@ -6,6 +6,8 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import cn.smbms.bean.User;
 import cn.smbms.dao.user.UserDao;
 import cn.smbms.util.BaseDao;
@@ -14,6 +16,8 @@ import cn.smbms.util.PageUtil;
 import com.mysql.jdbc.PreparedStatement;
 
 public class UserDaoImpl implements UserDao {
+
+	private Logger log = Logger.getLogger(UserDaoImpl.class);
 
 	// 通过id得到一个user对象
 	@Override
@@ -44,6 +48,7 @@ public class UserDaoImpl implements UserDao {
 			}
 			BaseDao.closeResource(null, pstm, rs);
 		}
+		log.debug(user);
 		return user;
 	}
 
@@ -65,6 +70,7 @@ public class UserDaoImpl implements UserDao {
 			}
 			BaseDao.closeResource(null, pstm, null);
 		}
+		log.debug(user);
 		return flag;
 	}
 
@@ -97,6 +103,7 @@ public class UserDaoImpl implements UserDao {
 			}
 			BaseDao.closeResource(null, pstm, rs);
 		}
+		log.debug(user);
 		return user;
 	}
 
@@ -114,6 +121,7 @@ public class UserDaoImpl implements UserDao {
 			}
 			BaseDao.closeResource(null, pstm, null);
 		}
+		log.debug(flag);
 		return flag;
 	}
 
@@ -135,6 +143,8 @@ public class UserDaoImpl implements UserDao {
 			}
 			BaseDao.closeResource(null, pstm, null);
 		}
+		log.debug(user);
+		log.debug(flag);
 		return flag;
 	}
 
@@ -152,6 +162,7 @@ public class UserDaoImpl implements UserDao {
 			}
 			BaseDao.closeResource(null, pstm, null);
 		}
+		log.debug(flag);
 		return flag;
 	}
 
@@ -163,7 +174,7 @@ public class UserDaoImpl implements UserDao {
 		ResultSet rs = null;
 		List<User> userList = new ArrayList<User>();
 		if (connection != null) {
-			String sql = "select * from smbms_user where userName like ? limit ?,?";
+			String sql = "select * from smbms_user where userName like ? order by id desc limit ?,?";
 			Object[] params = { ("%" + userName + "%"),
 					(pageUtil.getPageIndex() - 1) * pageUtil.getPageSize(),
 					pageUtil.getPageSize() };
@@ -174,13 +185,14 @@ public class UserDaoImpl implements UserDao {
 				_user.setUserCode(rs.getString("userCode"));
 				_user.setUserName(rs.getString("userName"));
 				_user.setGender(rs.getInt("gender"));
-				_user.setBirthday(rs.getDate("birthday"));
+				_user.setBirthday(rs.getTimestamp("birthday"));
 				_user.setPhone(rs.getString("phone"));
 				_user.setUserType(rs.getInt("userType"));
 				userList.add(_user);// 向集合中赋值
 			}
 			BaseDao.closeResource(null, pstm, rs);
 		}
+		log.debug(userList);
 		return userList;
 	}
 
@@ -200,6 +212,7 @@ public class UserDaoImpl implements UserDao {
 			}
 			BaseDao.closeResource(null, pstm, rs);
 		}
+		log.debug(totalCounts);
 		return totalCounts;
 	}
 

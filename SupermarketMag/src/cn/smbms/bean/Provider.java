@@ -2,6 +2,8 @@ package cn.smbms.bean;
 
 import java.util.Date;
 
+import cn.smbms.util.PageUtil;
+
 public class Provider {
 	private Integer id;// id
 	private String proCode;// 供应商编码
@@ -15,6 +17,16 @@ public class Provider {
 	private Date creationDate;// 创建时间
 	private Integer modifyBy;// 更新者
 	private Date modifyDate;// 更新时间
+
+	private PageUtil pageUtil; // 分页工具对象
+
+	public PageUtil getPageUtil() {
+		return pageUtil;
+	}
+
+	public void setPageUtil(PageUtil pageUtil) {
+		this.pageUtil = pageUtil;
+	}
 
 	public Integer getId() {
 		return id;
@@ -115,7 +127,7 @@ public class Provider {
 	public Provider(Integer id, String proCode, String proName, String proDesc,
 			String proContact, String proPhone, String proAdderss,
 			String proFax, Integer createdBy, Date creationDate,
-			Integer modifyBy, Date modifyDate) {
+			Integer modifyBy, Date modifyDate, PageUtil pageUtil) {
 		super();
 		this.id = id;
 		this.proCode = proCode;
@@ -129,6 +141,7 @@ public class Provider {
 		this.creationDate = creationDate;
 		this.modifyBy = modifyBy;
 		this.modifyDate = modifyDate;
+		this.pageUtil = pageUtil;
 	}
 
 	public Provider() {
@@ -142,7 +155,8 @@ public class Provider {
 				+ proContact + ", proPhone=" + proPhone + ", proAdderss="
 				+ proAdderss + ", proFax=" + proFax + ", createdBy="
 				+ createdBy + ", creationDate=" + creationDate + ", modifyBy="
-				+ modifyBy + ", modifyDate=" + modifyDate + "]";
+				+ modifyBy + ", modifyDate=" + modifyDate + ", pageUtil="
+				+ pageUtil + "]";
 	}
 
 }

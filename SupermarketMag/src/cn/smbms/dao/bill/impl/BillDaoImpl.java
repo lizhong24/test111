@@ -7,14 +7,19 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import cn.smbms.bean.Bill;
 import cn.smbms.dao.bill.BillDao;
+import cn.smbms.dao.provider.impl.ProviderDaoImpl;
 import cn.smbms.util.BaseDao;
 import cn.smbms.util.PageUtil;
 
 import com.mysql.jdbc.StringUtils;
 
 public class BillDaoImpl implements BillDao {
+
+	private Logger log = Logger.getLogger(ProviderDaoImpl.class);
 
 	// 通过id得到账单对象
 	@Override
@@ -44,6 +49,7 @@ public class BillDaoImpl implements BillDao {
 			}
 			BaseDao.closeResource(null, pstm, rs);
 		}
+		log.debug(bill);
 		return bill;
 	}
 
@@ -63,6 +69,7 @@ public class BillDaoImpl implements BillDao {
 			}
 			BaseDao.closeResource(null, pstm, rs);
 		}
+		log.debug(billCount);
 		return billCount;
 	}
 
@@ -84,6 +91,8 @@ public class BillDaoImpl implements BillDao {
 			}
 			BaseDao.closeResource(null, pstm, null);
 		}
+		log.debug(bill);
+		log.debug(flag);
 		return flag;
 	}
 
@@ -105,6 +114,8 @@ public class BillDaoImpl implements BillDao {
 			}
 			BaseDao.closeResource(null, preparedStatement, null);
 		}
+		log.debug(bill);
+		log.debug(flag);
 		return flag;
 	}
 
@@ -122,6 +133,7 @@ public class BillDaoImpl implements BillDao {
 			}
 			BaseDao.closeResource(null, pstm, null);
 		}
+		log.debug(flag);
 		return flag;
 	}
 
@@ -172,9 +184,12 @@ public class BillDaoImpl implements BillDao {
 				_bill.setCreationDate(rs.getTimestamp("creationDate"));
 				_bill.setCreatedBy(rs.getInt("createdBy"));
 				pageBillList.add(_bill);
+				log.debug(_bill);
 			}
 			BaseDao.closeResource(null, pstm, rs);
 		}
+		log.debug(bill);
+		log.debug(pageBillList);
 		return pageBillList;
 	}
 
@@ -208,6 +223,7 @@ public class BillDaoImpl implements BillDao {
 			}
 			BaseDao.closeResource(null, pstm, rs);
 		}
+		log.debug(billCount);
 		return billCount;
 	}
 }
